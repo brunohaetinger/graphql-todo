@@ -1,4 +1,5 @@
 import { ApolloServer, gql } from "apollo-server";
+import auth from "./auth";
 
 const typeDefs = gql`
     type Query {
@@ -17,21 +18,12 @@ const resolvers = {
     },
 };
 
-// TODO: to be implemented
-const getUserFromToken = (token) => {
-    if(!token) return null;
-    return {
-        name: 'Steve Gates',
-        age: '50',
-    }
-}
-
 const server = new ApolloServer({
     typeDefs, 
     resolvers,
     context: (({req})=> {
         const token = req.headers.authorization || '';
-        const user = getUserFromToken(token);
+        const user = auth.getUserFromToken(token);
         return {user};
     }),
 });
