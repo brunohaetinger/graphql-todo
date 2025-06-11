@@ -1,4 +1,4 @@
 const users = [];
 const tasks = [];
 
-module.exports = { users, tasks };
+export default { users, tasks };
