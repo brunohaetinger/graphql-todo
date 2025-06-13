@@ -1,5 +1,6 @@
 import { ApolloServer, gql } from "apollo-server";
-import auth from "./auth";
+import { getUserFromToken } from "./auth";
+import resolvers from './resolvers';
 
 const typeDefs = gql`
     type Query {
@@ -8,22 +9,12 @@ const typeDefs = gql`
     }
 `;
 
-const resolvers = {
-    Query: {
-        hello: () => "Hello GraphQL !",
-        secretCompanyProfit: (_,__,context) => {
-            if(!context.user) throw new Error('Not Authorized');
-            return '$ 999.999';
-        }
-    },
-};
-
 const server = new ApolloServer({
     typeDefs, 
     resolvers,
     context: (({req})=> {
         const token = req.headers.authorization || '';
-        const user = auth.getUserFromToken(token);
+        const user = getUserFromToken(token);
         return {user};
     }),
 });
