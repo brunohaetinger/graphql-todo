@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
-import {users, tasks} from './users';
-import {generateToken} from './auth';
+import {users, tasks} from './users.js';
+import {generateToken} from './auth.js';
 
 const resolvers = {
     Query: {
