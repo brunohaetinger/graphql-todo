@@ -1,13 +1,7 @@
 import { ApolloServer, gql } from "apollo-server";
-import { getUserFromToken } from "./auth";
-import resolvers from './resolvers';
-
-const typeDefs = gql`
-    type Query {
-        hello: String
-        secretCompanyProfit: String
-    }
-`;
+import { getUserFromToken } from "./auth.js";
+import resolvers from './resolvers.js';
+import typeDefs from './schema.js';
 
 const server = new ApolloServer({
     typeDefs, 
