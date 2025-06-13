@@ -14,4 +14,4 @@ const getUserFromToken = (token) => {
   }
 }
 
-export default { generateToken, getUserFromToken };
+export { generateToken, getUserFromToken };
