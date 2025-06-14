@@ -1,0 +1,48 @@
+query QueryUser {
+  me {
+    id,
+    email
+  }
+}
+
+query QueryMyTasks {
+  myTasks {
+    title,
+    userId
+  }
+}
+
+mutation DoLogin($email: String!, $password: String!) {
+  login(email: $email, password: $password) {
+    user {
+      email
+    },
+    token
+  }
+}
+
+mutation DoRegister($email: String!, $password: String!) {
+  register(email: $email, password: $password) {
+    user {
+      email
+    },
+    token
+  }
+}
+
+mutation CreateTask($title: String!) {
+  createTask(title: $title) {
+    id,
+    title,
+    done,
+    userId,
+  }
+}
+
+// VARIABLES
+
+{
+  "email": "foo@bar.com",
+  "password": "pass",
+  "title": "Go shopping"
+}
