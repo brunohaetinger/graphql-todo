@@ -1,28 +1,19 @@
+import { ApolloProvider } from '@apollo/client';
 import './App.css'
-
-import { ApolloClient, InMemoryCache, ApolloProvider, gql, useQuery } from '@apollo/client';
-
-const client = new ApolloClient({
-  uri: 'http://localhost:4000/',
-  cache: new InMemoryCache()
-});
-
-const HELLO_QUERY = gql`
-  query {
-    hello
-  }
-`;
-
-function Hello() {
-  const { data, loading } = useQuery(HELLO_QUERY);
-  if (loading) return <p>Carregando...</p>;
-  return <p>{data.hello}</p>;
-}
+import { client } from './apollo';
+import { isAuthenticated } from './utils/auth';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 function App() {
   return (
     <ApolloProvider client={client}>
-      <Hello />
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={isAuthenticated() ? <Tasks/> : <Navigate to='/login'/>}/>
+          <Route path='/login' element={<Login />}/>
+          <Route path='/register' element={<Register />}/>
+        </Routes>
+      </BrowserRouter>
     </ApolloProvider>
   );
 }
