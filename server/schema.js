@@ -30,6 +30,10 @@ const typeDefs = gql`
     createTask(title: String!): Task!
     deleteTask(id: ID!): Boolean!
   }
+
+  type Subscription {
+    taskCreated: Task!
+  }
 `;
 
 export default typeDefs;
