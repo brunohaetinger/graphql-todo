@@ -1,7 +1,12 @@
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
+import { PubSub } from 'graphql-subscriptions';
 import {users, tasks} from './users.js';
 import {generateToken} from './auth.js';
+
+const pubsub = new PubSub();
+
+const TASK_CREATED = 'TASK_CREATED';
 
 const resolvers = {
     Query: {
@@ -30,6 +35,7 @@ const resolvers = {
             if(!user) throw new Error('Not authenticated');
             const task = {id: uuidv4(), title, done: false, userId: user.id};
             tasks.push(task);
+            pubsub.publish(TASK_CREATED, { taskCreated: task });
             return task;
         },
         deleteTask: (_, {id}, {user}) => {
@@ -37,6 +43,12 @@ const resolvers = {
             if(index === -1) return false;
             tasks.splice(index, 1);
             return true;
+        }
+    },
+
+    Subscription: {
+        taskCreated: {
+            subscribe: () => pubsub.asyncIterableIterator([TASK_CREATED])
         }
     }
 };
