@@ -2,7 +2,10 @@ import { ApolloProvider } from '@apollo/client';
 import './App.css'
 import { client } from './apollo';
 import { isAuthenticated } from './utils/auth';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { Tasks } from './pages/Tasks';
+import { Login } from './pages/Login';
+import { Register } from './pages/Register';
 
 function App() {
   return (
