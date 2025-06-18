@@ -1,7 +1,7 @@
 import { ApolloServer } from "apollo-server-express";
 import express from 'express';
 import {createServer} from 'http';
-import {useServer} from 'graphql-ws';
+import {makeServer} from 'graphql-ws';
 import { WebSocketServer } from 'ws';
 import {makeExecutableSchema } from '@graphql-tools/schema';
 
@@ -14,8 +14,8 @@ const httpServer = createServer(app);
 
 const schema = makeExecutableSchema({typeDefs, resolvers})
 
-const wsServer = newWebSocket({server: httpServer, path: '/graphql'});
-useServer({schema}, wsServer);
+const wsServer = new WebSocketServer({server: httpServer, path: '/graphql'});
+makeServer({schema}, wsServer);
 
 const server = new ApolloServer({
     schema,
