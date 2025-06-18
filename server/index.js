@@ -1,5 +1,6 @@
 import { ApolloServer } from "apollo-server-express";
 import express from 'express';
+import cors from 'cors';
 import {createServer} from 'http';
 import {makeServer} from 'graphql-ws';
 import { WebSocketServer } from 'ws';
@@ -10,6 +11,7 @@ import resolvers from './resolvers.js';
 import typeDefs from './schema.js';
 
 const app = express();
+app.use(cors());
 const httpServer = createServer(app);
 
 const schema = makeExecutableSchema({typeDefs, resolvers})
