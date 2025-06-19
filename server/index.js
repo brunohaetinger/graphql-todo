@@ -17,7 +17,14 @@ const httpServer = createServer(app);
 const schema = makeExecutableSchema({typeDefs, resolvers})
 
 const wsServer = new WebSocketServer({server: httpServer, path: '/graphql'});
-makeServer({schema}, wsServer);
+makeServer({
+    schema,
+    context: async (ctx) => {
+        const token = ctx.connectionParams?.authToken || '';
+        const user = getUserFromToken(token);
+        return { user };
+    },
+}, wsServer);
 
 const server = new ApolloServer({
     schema,
