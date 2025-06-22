@@ -4,7 +4,7 @@ import { ApolloServer } from 'apollo-server-express';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import { makeExecutableSchema } from '@graphql-tools/schema';
-import { makeServer } from 'graphql-ws';  // Corrigido
+import { useServer } from 'graphql-ws/use/ws';
 
 import { typeDefs, resolvers } from './schema/index.js';
 import { getUserFromToken } from './auth/auth.js';
@@ -15,25 +15,23 @@ const startServer = async () => {
 
   const schema = makeExecutableSchema({ typeDefs, resolvers });
 
-  // 🔄 WebSocket Server com makeServer
+  // 🔄 WebSocket Server com useServer
   const wsServer = new WebSocketServer({
     server: httpServer,
     path: '/graphql',
   });
 
-  const server = makeServer({
-    schema,
-    context: async (ctx, msg, args) => {
-      const token = ctx.connectionParams?.authToken;
-      const user = getUserFromToken(token);
-      return { user };
+  useServer(
+    {
+      schema,
+      context: async (ctx, msg, args) => {
+        const token = ctx.connectionParams?.authToken;
+        const user = getUserFromToken(token);
+        return { user };
+      },
     },
-  });
-
-  wsServer.on('connection', (socket) => {
-    server.onConnection(socket);
-  });
-
+    wsServer,
+  );
   // 🚀 Apollo Server HTTP
   const apolloServer = new ApolloServer({
     schema,
