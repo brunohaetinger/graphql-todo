@@ -8,7 +8,12 @@ export default {
     return task;
   },
 
-  getMyTasks: async(user) => await db.Task.findAll({where: {userId: user.id}}),
+  getMyTasks: async(user) => {
+    if (!user || !user.id) {
+      throw new Error('Authentication required to fetch tasks.');
+    }
+    return await db.Task.findAll({where: {userId: user.id}});
+  },
 
   deleteTask: async (id, user) => {
     const deleted = await db.Task.destroy({where: { id, userId: user.id }});
