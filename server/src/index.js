@@ -8,6 +8,7 @@ import { useServer } from 'graphql-ws/use/ws';
 
 import { typeDefs, resolvers } from './schema/index.js';
 import { getUserFromToken } from './auth/auth.js';
+import { pubsub } from './auth/pubsub.js';
 
 const startServer = async () => {
   const app = express();
@@ -27,7 +28,7 @@ const startServer = async () => {
       context: async (ctx, msg, args) => {
         const token = ctx.connectionParams?.authToken;
         const user = getUserFromToken(token);
-        return { user };
+        return { user, pubsub };
       },
     },
     wsServer,
@@ -38,7 +39,7 @@ const startServer = async () => {
     context: ({ req }) => {
       const token = req.headers.authorization || '';
       const user = getUserFromToken(token);
-      return { user };
+      return { user, pubsub };
     },
   });
 

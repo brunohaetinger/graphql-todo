@@ -12,7 +12,10 @@ export default {
   Mutation: {
     register: (_, { email, password }) => userService.register(email, password),
     login: (_, { email, password }) => userService.login(email, password),
-    createTask: (_, { title }, { user }) => taskService.createTask(title, user),
+    createTask: (_, { title }, { user }) => {
+      pubsub.publish(TASK_CREATED)
+      taskService.createTask(title, user)
+    },
     deleteTask: (_, { id }, { user }) => taskService.deleteTask(id, user)
   },
 
