@@ -1,23 +1,22 @@
 import bcrypt from 'bcryptjs';
-import { v4 as uuidv4 } from 'uuid';
 import { generateToken } from '../auth/auth.js';
-import userModel from '../models/userModel.js';
+import db from '../models/index.js';
 
 export default {
   register: async (email, password) => {
-    if (userModel.getUserByEmail(email)) throw new Error('Usuário já existe');
+    if (await db.User.findOne({where: { email }})) throw new Error('User already exists');
     const hashed = await bcrypt.hash(password, 10);
-    const user = { id: uuidv4(), email, password: hashed };
-    userModel.addUser(user);
+    const user = { email, password: hashed };
+    await db.User.create(user);
     const token = generateToken(user);
     return { token, user };
   },
 
   login: async (email, password) => {
-    const user = userModel.getUserByEmail(email);
-    if (!user) throw new Error('Usuário não encontrado');
+    const user = await db.User.findOne({where: { email }});
+    if (!user) throw new Error('User not found');
     const valid = await bcrypt.compare(password, user.password);
-    if (!valid) throw new Error('Senha incorreta');
+    if (!valid) throw new Error('Incorrect Password');
     const token = generateToken(user);
     return { token, user };
   }
