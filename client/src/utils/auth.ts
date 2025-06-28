@@ -1,12 +1,8 @@
-export const saveToken = (token: string) => {
-    localStorage.setItem('token', token);
-}
-
 export const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('accessToken');
     window.location.href = '/';
 }
 
 export const isAuthenticated = () => {
-    return Boolean(localStorage.getItem('token'));
+    return Boolean(localStorage.getItem('accessToken'));
 }

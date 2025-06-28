@@ -1,11 +1,15 @@
 import { gql, useMutation } from "@apollo/client";
 import { useState } from 'react';
-import { saveToken } from "../utils/auth";
 
 const LOGIN = gql`
     mutation($email: String!, $password: String!){
         login(email: $email, password: $password){
-            token
+            accessToken
+            refreshToken
+            user {
+                id
+                email
+            }
         }
     }
 `;
@@ -14,7 +18,8 @@ export const Login = () => {
     const [form, setForm] = useState({email: '', password: ''});
     const [login] = useMutation(LOGIN, {
         onCompleted: (data) => {
-            saveToken(data.login.token);
+            localStorage.setItem('accessToken', data.login.accessToken);
+            // The refreshToken is expected to be set as an HTTP-only cookie by the server
             window.location.href = '/';
         },
         onError: (err) => alert(err.message)
