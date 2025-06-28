@@ -15,8 +15,13 @@ const typeDefs = gql`
   }
 
   type AuthPayload {
-    token: String!
+    accessToken: String!
+    refreshToken: String!
     user: User!
+  }
+
+  type RefreshTokenPayload {
+    accessToken: String!
   }
 
   type Query {
@@ -27,6 +32,7 @@ const typeDefs = gql`
   type Mutation {
     register(email: String!, password: String!): AuthPayload
     login(email: String!, password: String!): AuthPayload
+    refreshToken(refreshToken: String!): RefreshTokenPayload
     createTask(title: String!): Task!
     deleteTask(id: ID!): Boolean!
   }

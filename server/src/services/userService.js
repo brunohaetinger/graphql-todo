@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { generateToken } from '../auth/auth.js';
+import { generateAccessToken, generateRefreshToken } from '../auth/auth.js';
 import db from '../models/index.js';
 
 export default {
@@ -8,8 +8,9 @@ export default {
     const hashed = await bcrypt.hash(password, 10);
     const user = { email, password: hashed };
     await db.User.create(user);
-    const token = generateToken(user);
-    return { token, user };
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+    return { accessToken, refreshToken, user };
   },
 
   login: async (email, password) => {
@@ -17,7 +18,8 @@ export default {
     if (!user) throw new Error('User not found');
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) throw new Error('Incorrect Password');
-    const token = generateToken(user);
-    return { token, user };
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+    return { accessToken, refreshToken, user };
   }
 };
